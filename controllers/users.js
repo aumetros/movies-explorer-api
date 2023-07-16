@@ -1,8 +1,62 @@
 const mongoose = require('mongoose');
 
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const ObjectID = mongoose.Types.ObjectId;
+
+const createUser = (req, res) => {
+  const { email, password, name } = req.body;
+  if (!email || !password || !name) {
+    res.status(400).send({ message: 'Неправильные данные' });
+    return;
+  }
+  if (validator.isEmail(email)) {
+    bcrypt.hash(password, 10)
+      .then((hash) => User.create({
+        email, password: hash, name,
+      }))
+      .then((user) => res.status(201).send({ data: user }))
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          res.status(400).send({ message: 'Неправильные данные' });
+        } else if (err.code === 11000) {
+          res.status(400).send({ message: 'Пользователь существует' });
+        } else {
+          res.status(500).send({ message: 'Ошибка сервера' });
+        }
+      });
+  }
+};
+
+const loginUser = (req, res) => {
+  const { email, password } = req.body;
+  User.findOne({ email })
+    .select('+password')
+    .then((user) => {
+      if (!user) {
+        res.status(400).send({ message: 'Неправильные данные' });
+        return;
+      }
+      bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (matched) {
+            const token = jwt.sign({ _id: user._id }, 'some-secret-key');
+            res.send({ token });
+          } else {
+            res.status(400).send({ message: 'Неправильные данные' });
+          }
+        })
+        .catch(() => {
+          res.status(400).send({ message: 'Неправильные данные' });
+        });
+    })
+    .catch(() => {
+      res.status(400).send({ message: 'Неправильные данные' });
+    });
+};
 
 const getUser = (req, res) => {
   if (!ObjectID.isValid(req.user._id)) {
@@ -46,6 +100,8 @@ const updateUser = (req, res) => {
 };
 
 module.exports = {
+  createUser,
+  loginUser,
   getUser,
   updateUser,
 };
