@@ -58,6 +58,11 @@ const loginUser = (req, res) => {
     });
 };
 
+const logoutUser = (req, res) => {
+  res.status(202).clearCookie('jwt').send('cookie cleared');
+  // res.redirect('/');
+};
+
 const getUser = (req, res) => {
   if (!ObjectID.isValid(req.user._id)) {
     res.status(400).send({ message: 'Неправильные данные' });
@@ -102,6 +107,7 @@ const updateUser = (req, res) => {
 module.exports = {
   createUser,
   loginUser,
+  logoutUser,
   getUser,
   updateUser,
 };
