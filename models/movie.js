@@ -4,7 +4,7 @@
 
 const mongoose = require('mongoose');
 
-const { linkReg } = require();
+const { linkReg } = require('../utils/constants');
 
 const movieSchema = new mongoose.Schema({
   country: {

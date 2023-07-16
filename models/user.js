@@ -4,7 +4,7 @@
 
 const mongoose = require('mongoose');
 
-const { emailReg } = require();
+const { emailReg } = require('../utils/constants');
 
 const userSchema = new mongoose.Schema({
   email: {
