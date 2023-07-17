@@ -65,10 +65,10 @@ const createMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  if (!req.params._id) {
+  if (!ObjectID.isValid(req.params._id)) {
     throw new BadRequestError(invalidMovieDataMsg);
   }
-  Movie.findOne({ movieId: req.params._id })
+  Movie.findById(req.params._id)
     .orFail(() => new Error(movieNotFoundMsg))
     .then((movie) => {
       if (movie.owner.equals(req.user._id)) {

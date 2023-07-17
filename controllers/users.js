@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
+const { DEV_JWT } = require('../utils/config');
 
 const {
   invalidUserDataMsg,
@@ -59,7 +60,7 @@ const loginUser = (req, res, next) => {
           if (matched) {
             const token = jwt.sign(
               { _id: user._id },
-              NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
+              NODE_ENV === 'production' ? JWT_SECRET : DEV_JWT,
               { expiresIn: '7d' },
             );
             res
