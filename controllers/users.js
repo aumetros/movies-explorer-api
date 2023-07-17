@@ -5,13 +5,26 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
+const {
+  invalidUserDataMsg,
+  existEmailMsg,
+  invalidLoginData,
+  userNotFoundMsg,
+} = require('../utils/constants');
+
+const {
+  BadRequestError,
+  AuthorizationError,
+  NotFoundError,
+  ExistEmailError,
+} = require('../utils/errors');
+
 const ObjectID = mongoose.Types.ObjectId;
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { email, password, name } = req.body;
   if (!email || !password || !name) {
-    res.status(400).send({ message: 'Неправильные данные' });
-    return;
+    throw new BadRequestError(invalidUserDataMsg);
   }
   if (validator.isEmail(email)) {
     bcrypt.hash(password, 10)
@@ -21,24 +34,23 @@ const createUser = (req, res) => {
       .then((user) => res.status(201).send({ data: user }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          res.status(400).send({ message: 'Неправильные данные' });
+          next(new BadRequestError(invalidUserDataMsg));
         } else if (err.code === 11000) {
-          res.status(400).send({ message: 'Пользователь существует' });
+          next(new ExistEmailError(existEmailMsg));
         } else {
-          res.status(500).send({ message: 'Ошибка сервера' });
+          next();
         }
       });
   }
 };
 
-const loginUser = (req, res) => {
+const loginUser = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email })
     .select('+password')
     .then((user) => {
       if (!user) {
-        res.status(400).send({ message: 'Неправильные данные' });
-        return;
+        throw new BadRequestError(invalidLoginData);
       }
       bcrypt.compare(password, user.password)
         .then((matched) => {
@@ -52,15 +64,15 @@ const loginUser = (req, res) => {
               })
               .send(user.toJSON());
           } else {
-            res.status(400).send({ message: 'Неправильные данные' });
+            next(new BadRequestError(invalidLoginData));
           }
         })
         .catch(() => {
-          res.status(400).send({ message: 'Неправильные данные' });
+          next(new BadRequestError(invalidLoginData));
         });
     })
     .catch(() => {
-      res.status(400).send({ message: 'Неправильные данные' });
+      next(new AuthorizationError(invalidLoginData));
     });
 };
 
@@ -68,43 +80,41 @@ const logoutUser = (req, res) => {
   res.status(202).clearCookie('jwt').send({ message: 'Куки удалены' });
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   if (!ObjectID.isValid(req.user._id)) {
-    res.status(400).send({ message: 'Неправильные данные' });
-    return;
+    throw new BadRequestError(invalidUserDataMsg);
   }
   User.findById(req.user._id)
-    .orFail(() => new Error('Юзер не найден'))
+    .orFail(() => new Error(userNotFoundMsg))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.message === 'Юзер не найден') {
-        res.status(404).send({ message: 'Юзер не найден' });
+      if (err.message === userNotFoundMsg) {
+        next(new NotFoundError(userNotFoundMsg));
       } else {
-        res.status(500).send({ message: 'Ошибка сервера' });
+        next();
       }
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { email, name } = req.body;
   if (!ObjectID.isValid(req.user._id)) {
-    res.status(400).send({ message: 'Неправильные данные' });
-    return;
+    throw new BadRequestError(invalidUserDataMsg);
   }
   User.findByIdAndUpdate(
     req.user._id,
     { email, name },
     { new: true, runValidators: true },
   )
-    .orFail(() => new Error('Юзер не найден'))
+    .orFail(() => new Error(userNotFoundMsg))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.message === 'Юзер не найден') {
-        res.status(404).send({ message: 'Юзер не найден' });
+      if (err.message === userNotFoundMsg) {
+        next(new NotFoundError(userNotFoundMsg));
       } else if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Неправильные данные' });
+        next(new BadRequestError(invalidUserDataMsg));
       } else {
-        res.status(500).send({ message: 'Ошибка сервера' });
+        next();
       }
     });
 };
