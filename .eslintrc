@@ -6,6 +6,10 @@
       "error",
       { "ignoreExpressions": true, "max": 10 }
   ],
-    "no-useless-escape": [0]
+    "no-useless-escape": [0],
+    "no-console":"off",
+    "consistent-return":"off",
+    "func-names":"off",
+    "object-shorthand":"off"
   }
 }

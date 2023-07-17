@@ -1,7 +1,3 @@
-/* eslint-disable func-names */
-/* eslint-disable space-before-function-paren */
-/* eslint-disable object-shorthand */
-
 const mongoose = require('mongoose');
 
 const { emailReg } = require('../utils/constants');
@@ -12,7 +8,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     required: true,
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         return emailReg.test(v);
       },
     },
@@ -30,7 +26,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.methods.toJSON = function() {
+userSchema.methods.toJSON = function () {
   const user = this.toObject();
   delete user.password;
   return user;

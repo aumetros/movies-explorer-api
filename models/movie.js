@@ -1,7 +1,3 @@
-/* eslint-disable func-names */
-/* eslint-disable space-before-function-paren */
-/* eslint-disable object-shorthand */
-
 const mongoose = require('mongoose');
 
 const { linkReg } = require('../utils/constants');
@@ -31,7 +27,7 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         return linkReg.test(v);
       },
     },
@@ -40,7 +36,7 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         return linkReg.test(v);
       },
     },
@@ -49,7 +45,7 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         return linkReg.test(v);
       },
     },

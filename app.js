@@ -34,6 +34,5 @@ app.use(errorLogger);
 app.use(handleErrors);
 
 app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
   console.log('Сервер запущен на порту 3000');
 });
