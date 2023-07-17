@@ -65,8 +65,7 @@ const loginUser = (req, res) => {
 };
 
 const logoutUser = (req, res) => {
-  res.status(202).clearCookie('jwt').send('cookie cleared');
-  // res.redirect('/');
+  res.status(202).clearCookie('jwt').send({ message: 'Куки удалены' });
 };
 
 const getUser = (req, res) => {
