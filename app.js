@@ -2,6 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const router = require('./routes');
+const handleErrors = require('./middlewares/handleErrors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -12,6 +13,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(router);
+
+app.use(handleErrors);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
