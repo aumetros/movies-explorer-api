@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const router = require('./routes');
 
@@ -8,6 +9,7 @@ const app = express();
 mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use(router);
 

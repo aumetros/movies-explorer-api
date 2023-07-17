@@ -55,11 +55,11 @@ const createMovie = (req, res) => {
 };
 
 const deleteMovie = (req, res) => {
-  if (!ObjectID.isValid(req.params._id)) {
-    res.status(400).send({ message: 'Неправильные данные фильма' });
+  if (!req.params._id) {
+    res.status(400).send({ message: 'Не переданы данные фильма' });
     return;
   }
-  Movie.findById(req.params._id)
+  Movie.findOne({ movieId: req.params._id })
     .orFail(() => new Error('Фильм не найден'))
     .then((movie) => {
       if (movie.owner.equals(req.user._id)) {
@@ -72,7 +72,7 @@ const deleteMovie = (req, res) => {
       if (err.message === 'Фильм не найден') {
         res.status(404).send({ message: 'Фильм не найден' });
       } else {
-        res.status(500).send({ message: 'Ошибка сервера' });
+        res.status(500).send({ message: err.message });
       }
     });
 };
