@@ -72,7 +72,7 @@ const deleteMovie = (req, res) => {
       if (err.message === 'Фильм не найден') {
         res.status(404).send({ message: 'Фильм не найден' });
       } else {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({ message: 'Ошибка сервера' });
       }
     });
 };
