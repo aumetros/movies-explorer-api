@@ -2,21 +2,31 @@ const mongoose = require('mongoose');
 
 const Movie = require('../models/movie');
 
+const {
+  invalidUserDataMsg,
+  invalidMovieDataMsg,
+  movieNotFoundMsg,
+  forbiddenErrorMsg,
+} = require('../utils/constants');
+
+const {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+} = require('../utils/errors');
+
 const ObjectID = mongoose.Types.ObjectId;
 
-const getMovies = (req, res) => {
+const getMovies = (req, res, next) => {
   if (!ObjectID.isValid(req.user._id)) {
-    res.status(400).send({ message: 'Неправильные данные пользователя' });
-    return;
+    throw new BadRequestError(invalidUserDataMsg);
   }
   Movie.find({ owner: req.user._id })
     .then((movies) => res.send({ data: movies }))
-    .catch(() => {
-      res.status(500).send({ message: 'Ошибка сервера' });
-    });
+    .catch(next);
 };
 
-const createMovie = (req, res) => {
+const createMovie = (req, res, next) => {
   const {
     country,
     director,
@@ -47,32 +57,31 @@ const createMovie = (req, res) => {
     .then((movie) => res.status(201).send({ data: movie }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Неправильные данные фильма' });
+        next(new BadRequestError(invalidMovieDataMsg));
       } else {
-        res.status(500).send({ message: 'Ошибка сервера' });
+        next();
       }
     });
 };
 
-const deleteMovie = (req, res) => {
+const deleteMovie = (req, res, next) => {
   if (!req.params._id) {
-    res.status(400).send({ message: 'Не переданы данные фильма' });
-    return;
+    throw new BadRequestError(invalidMovieDataMsg);
   }
   Movie.findOne({ movieId: req.params._id })
-    .orFail(() => new Error('Фильм не найден'))
+    .orFail(() => new Error(movieNotFoundMsg))
     .then((movie) => {
       if (movie.owner.equals(req.user._id)) {
         movie.deleteOne();
         return res.send(movie);
       }
-      return res.status(401).send({ message: 'Удаление карточки запрещено' });
+      throw new ForbiddenError(forbiddenErrorMsg);
     })
     .catch((err) => {
-      if (err.message === 'Фильм не найден') {
-        res.status(404).send({ message: 'Фильм не найден' });
+      if (err.message === movieNotFoundMsg) {
+        next(new NotFoundError(movieNotFoundMsg));
       } else {
-        res.status(500).send({ message: 'Ошибка сервера' });
+        next();
       }
     });
 };
