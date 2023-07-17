@@ -1,10 +1,24 @@
 const router = require('express').Router();
+const { celebrate, Joi, errors } = require('celebrate');
 const auth = require('../middlewares/auth');
 
 const { createUser, loginUser, logoutUser } = require('../controllers/users');
 
-router.post('/signup', createUser);
-router.post('/signin', loginUser);
+router.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+    name: Joi.string().min(2).max(30).required(),
+  }),
+}), createUser);
+
+router.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+  }),
+}), loginUser);
+
 router.post('/signout', logoutUser);
 
 router.use(auth);
@@ -15,5 +29,7 @@ router.use('/movies', require('./movies'));
 router.use('*', (req, res) => {
   res.status(404).send({ message: 'Страница не найдена' });
 });
+
+router.use(errors());
 
 module.exports = router;
