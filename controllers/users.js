@@ -38,7 +38,7 @@ const createUser = (req, res, next) => {
         } else if (err.code === 11000) {
           next(new ExistEmailError(existEmailMsg));
         } else {
-          next();
+          next(err);
         }
       });
   }
@@ -71,13 +71,9 @@ const loginUser = (req, res, next) => {
             next(new AuthorizationError(invalidLoginData));
           }
         })
-        .catch(() => {
-          next(new AuthorizationError(invalidLoginData));
-        });
+        .catch(next);
     })
-    .catch(() => {
-      next(new AuthorizationError(invalidLoginData));
-    });
+    .catch(next);
 };
 
 const logoutUser = (req, res) => {
@@ -95,7 +91,7 @@ const getUser = (req, res, next) => {
       if (err.message === userNotFoundMsg) {
         next(new NotFoundError(userNotFoundMsg));
       } else {
-        next();
+        next(err);
       }
     });
 };
@@ -120,7 +116,7 @@ const updateUser = (req, res, next) => {
       } else if (err.code === 11000) {
         next(new ExistEmailError(existEmailMsg));
       } else {
-        next();
+        next(err);
       }
     });
 };

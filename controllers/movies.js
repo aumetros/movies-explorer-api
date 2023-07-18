@@ -59,7 +59,7 @@ const createMovie = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(invalidMovieDataMsg));
       } else {
-        next();
+        next(err);
       }
     });
 };
@@ -81,7 +81,7 @@ const deleteMovie = (req, res, next) => {
       if (err.message === movieNotFoundMsg) {
         next(new NotFoundError(movieNotFoundMsg));
       } else {
-        next();
+        next(err);
       }
     });
 };
