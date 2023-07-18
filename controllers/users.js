@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -21,8 +19,6 @@ const {
   NotFoundError,
   ExistEmailError,
 } = require('../utils/errors');
-
-const ObjectID = mongoose.Types.ObjectId;
 
 const createUser = (req, res, next) => {
   const { email, password, name } = req.body;
@@ -81,9 +77,6 @@ const logoutUser = (req, res) => {
 };
 
 const getUser = (req, res, next) => {
-  if (!ObjectID.isValid(req.user._id)) {
-    throw new BadRequestError(invalidUserDataMsg);
-  }
   User.findById(req.user._id)
     .orFail(() => new NotFoundError(userNotFoundMsg))
     .then((user) => res.send({ data: user }))
@@ -98,9 +91,6 @@ const getUser = (req, res, next) => {
 
 const updateUser = (req, res, next) => {
   const { email, name } = req.body;
-  if (!ObjectID.isValid(req.user._id)) {
-    throw new BadRequestError(invalidUserDataMsg);
-  }
   User.findByIdAndUpdate(
     req.user._id,
     { email, name },

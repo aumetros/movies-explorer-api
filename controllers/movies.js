@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const Movie = require('../models/movie');
 
 const {
-  invalidUserDataMsg,
   invalidMovieDataMsg,
   movieNotFoundMsg,
   forbiddenErrorMsg,
@@ -18,9 +17,6 @@ const {
 const ObjectID = mongoose.Types.ObjectId;
 
 const getMovies = (req, res, next) => {
-  if (!ObjectID.isValid(req.user._id)) {
-    throw new BadRequestError(invalidUserDataMsg);
-  }
   Movie.find({ owner: req.user._id })
     .then((movies) => res.send({ data: movies }))
     .catch(next);
