@@ -35,8 +35,8 @@ const createMovie = (req, res, next) => {
     description,
     image,
     trailer,
-    nameRu,
-    nameEn,
+    nameRU,
+    nameEN,
     thumbnail,
     movieId,
   } = req.body;
@@ -50,8 +50,8 @@ const createMovie = (req, res, next) => {
     trailerLink: trailer,
     thumbnail,
     owner: req.user._id,
-    nameRu,
-    nameEn,
+    nameRU,
+    nameEN,
     movieId,
   })
     .then((movie) => res.status(201).send({ data: movie }))
