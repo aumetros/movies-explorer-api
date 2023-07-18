@@ -12,6 +12,7 @@ const movieNotFoundMsg = 'Фильм не найден.';
 const forbiddenErrorMsg = 'У вас нет прав на этой действие.';
 const authErrorMsg = 'Необходима авторизация';
 const routeNotFoundMsg = 'Маршрут не найден';
+const intServerErrorMsg = 'На сервере произошла ошибка';
 
 module.exports = {
   linkReg,
@@ -25,4 +26,5 @@ module.exports = {
   forbiddenErrorMsg,
   authErrorMsg,
   routeNotFoundMsg,
+  intServerErrorMsg,
 };

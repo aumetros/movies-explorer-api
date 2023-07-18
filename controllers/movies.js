@@ -69,7 +69,7 @@ const deleteMovie = (req, res, next) => {
     throw new BadRequestError(invalidMovieDataMsg);
   }
   Movie.findById(req.params._id)
-    .orFail(() => new Error(movieNotFoundMsg))
+    .orFail(() => new NotFoundError(movieNotFoundMsg))
     .then((movie) => {
       if (movie.owner.equals(req.user._id)) {
         movie.deleteOne()

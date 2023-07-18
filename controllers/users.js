@@ -85,7 +85,7 @@ const getUser = (req, res, next) => {
     throw new BadRequestError(invalidUserDataMsg);
   }
   User.findById(req.user._id)
-    .orFail(() => new Error(userNotFoundMsg))
+    .orFail(() => new NotFoundError(userNotFoundMsg))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.message === userNotFoundMsg) {
@@ -106,7 +106,7 @@ const updateUser = (req, res, next) => {
     { email, name },
     { new: true, runValidators: true },
   )
-    .orFail(() => new Error(userNotFoundMsg))
+    .orFail(() => new NotFoundError(userNotFoundMsg))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.message === userNotFoundMsg) {
