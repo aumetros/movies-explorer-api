@@ -5,12 +5,12 @@ const limiter = rateLimit({
   max: 100,
 });
 
-const DB_ADDRESS = 'mongodb://127.0.0.1:27017/bitfilmsdb';
+const DEV_DB_ADDRESS = 'mongodb://127.0.0.1:27017/bitfilmsdb';
 
 const DEV_JWT = 'some-secret-key';
 
 module.exports = {
   limiter,
-  DB_ADDRESS,
+  DEV_DB_ADDRESS,
   DEV_JWT,
 };

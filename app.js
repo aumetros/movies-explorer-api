@@ -7,12 +7,12 @@ const cors = require('cors');
 const router = require('./routes');
 const handleErrors = require('./middlewares/handleErrors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { limiter, DB_ADDRESS } = require('./utils/config');
+const { limiter, DEV_DB_ADDRESS } = require('./utils/config');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, NODE_ENV, PROD_DB_ADDRESS } = process.env;
 const app = express();
 
-mongoose.connect(DB_ADDRESS);
+mongoose.connect(NODE_ENV === 'production' ? PROD_DB_ADDRESS : DEV_DB_ADDRESS);
 
 app.use(helmet());
 
