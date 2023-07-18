@@ -50,7 +50,7 @@ const loginUser = (req, res, next) => {
     .select('+password')
     .then((user) => {
       if (!user) {
-        throw new BadRequestError(invalidLoginData);
+        throw new AuthorizationError(invalidLoginData);
       }
       bcrypt.compare(password, user.password)
         .then((matched) => {
@@ -68,11 +68,11 @@ const loginUser = (req, res, next) => {
               })
               .send(user.toJSON());
           } else {
-            next(new BadRequestError(invalidLoginData));
+            next(new AuthorizationError(invalidLoginData));
           }
         })
         .catch(() => {
-          next(new BadRequestError(invalidLoginData));
+          next(new AuthorizationError(invalidLoginData));
         });
     })
     .catch(() => {
