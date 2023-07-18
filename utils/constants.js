@@ -11,6 +11,7 @@ const invalidMovieDataMsg = 'Переданы некорректные данн�
 const movieNotFoundMsg = 'Фильм не найден.';
 const forbiddenErrorMsg = 'У вас нет прав на этой действие.';
 const authErrorMsg = 'Необходима авторизация';
+const routeNotFoundMsg = 'Маршрут не найден';
 
 module.exports = {
   linkReg,
@@ -23,4 +24,5 @@ module.exports = {
   movieNotFoundMsg,
   forbiddenErrorMsg,
   authErrorMsg,
+  routeNotFoundMsg,
 };

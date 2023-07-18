@@ -26,9 +26,6 @@ const ObjectID = mongoose.Types.ObjectId;
 
 const createUser = (req, res, next) => {
   const { email, password, name } = req.body;
-  // if (!email || !password || !name) {
-  //   throw new BadRequestError(invalidUserDataMsg);
-  // }
   if (validator.isEmail(email)) {
     bcrypt.hash(password, 10)
       .then((hash) => User.create({
