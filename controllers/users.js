@@ -26,9 +26,9 @@ const ObjectID = mongoose.Types.ObjectId;
 
 const createUser = (req, res, next) => {
   const { email, password, name } = req.body;
-  if (!email || !password || !name) {
-    throw new BadRequestError(invalidUserDataMsg);
-  }
+  // if (!email || !password || !name) {
+  //   throw new BadRequestError(invalidUserDataMsg);
+  // }
   if (validator.isEmail(email)) {
     bcrypt.hash(password, 10)
       .then((hash) => User.create({
@@ -120,6 +120,8 @@ const updateUser = (req, res, next) => {
         next(new NotFoundError(userNotFoundMsg));
       } else if (err.name === 'ValidationError') {
         next(new BadRequestError(invalidUserDataMsg));
+      } else if (err.code === 11000) {
+        next(new ExistEmailError(existEmailMsg));
       } else {
         next();
       }
