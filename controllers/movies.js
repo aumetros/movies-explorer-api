@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const Movie = require('../models/movie');
 
 const {
@@ -13,8 +11,6 @@ const {
   ForbiddenError,
   NotFoundError,
 } = require('../utils/errors');
-
-const ObjectID = mongoose.Types.ObjectId;
 
 const getMovies = (req, res, next) => {
   Movie.find({ owner: req.user._id })
@@ -61,9 +57,6 @@ const createMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  if (!ObjectID.isValid(req.params._id)) {
-    throw new BadRequestError(invalidMovieDataMsg);
-  }
   Movie.findById(req.params._id)
     .orFail(() => new NotFoundError(movieNotFoundMsg))
     .then((movie) => {
