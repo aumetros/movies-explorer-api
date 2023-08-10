@@ -27,7 +27,19 @@ const createUser = (req, res, next) => {
       .then((hash) => User.create({
         email, password: hash, name,
       }))
-      .then((user) => res.status(201).send({ data: user }))
+      .then((user) => {
+        const token = jwt.sign(
+          { _id: user._id },
+          NODE_ENV === 'production' ? JWT_SECRET : DEV_JWT,
+          { expiresIn: '7d' },
+        );
+        res.status(201).cookie('jwt', token, {
+          maxAge: 3600000 * 24,
+          httpOnly: true,
+          sameSite: 'none',
+          secure: true,
+        }).send(user.toJSON());
+      })
       .catch((err) => {
         if (err.name === 'ValidationError') {
           next(new BadRequestError(invalidUserDataMsg));
