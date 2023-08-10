@@ -34,7 +34,7 @@ const createUser = (req, res, next) => {
           { expiresIn: '7d' },
         );
         res.status(201).cookie('jwt', token, {
-          maxAge: 3600000 * 24,
+          maxAge: 604800000,
           httpOnly: true,
           sameSite: 'none',
           secure: true,
@@ -70,7 +70,7 @@ const loginUser = (req, res, next) => {
             );
             res
               .cookie('jwt', token, {
-                maxAge: 3600000 * 24,
+                maxAge: 604800000,
                 httpOnly: true,
                 sameSite: 'none',
                 secure: true,
