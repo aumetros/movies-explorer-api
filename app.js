@@ -24,6 +24,7 @@ app.use(requestLogger);
 app.use(limiter);
 
 app.use(cors({
+  origin: 'http://localhost:3000',
   credentials: true,
 }));
 
