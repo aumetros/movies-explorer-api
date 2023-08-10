@@ -60,6 +60,7 @@ const loginUser = (req, res, next) => {
               .cookie('jwt', token, {
                 maxAge: 3600000 * 24,
                 httpOnly: true,
+                sameSite: 'none',
               })
               .send(user.toJSON());
           } else {
