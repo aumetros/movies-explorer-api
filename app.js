@@ -24,7 +24,7 @@ app.use(requestLogger);
 app.use(limiter);
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://api.aumetrosdiploma.nomoredomains.xyz'],
+  origin: ['http://localhost:3000', 'https://aumetrosdiploma.nomoredomains.xyz'],
   credentials: true,
 }));
 
