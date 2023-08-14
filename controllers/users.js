@@ -27,19 +27,7 @@ const createUser = (req, res, next) => {
       .then((hash) => User.create({
         email, password: hash, name,
       }))
-      .then((user) => {
-        const token = jwt.sign(
-          { _id: user._id },
-          NODE_ENV === 'production' ? JWT_SECRET : DEV_JWT,
-          { expiresIn: '7d' },
-        );
-        res.status(201).cookie('jwt', token, {
-          maxAge: 604800000,
-          httpOnly: true,
-          sameSite: 'none',
-          secure: true,
-        }).send(user.toJSON());
-      })
+      .then((user) => res.status(201).send(user.toJSON()))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           next(new BadRequestError(invalidUserDataMsg));
@@ -72,8 +60,9 @@ const loginUser = (req, res, next) => {
               .cookie('jwt', token, {
                 maxAge: 604800000,
                 httpOnly: true,
-                sameSite: 'none',
-                secure: true,
+                sameSite: true,
+                // sameSite: 'none',
+                // secure: true,
               })
               .send(user.toJSON());
           } else {
