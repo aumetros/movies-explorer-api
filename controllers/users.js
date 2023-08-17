@@ -61,8 +61,6 @@ const loginUser = (req, res, next) => {
                 maxAge: 604800000,
                 httpOnly: true,
                 sameSite: true,
-                // sameSite: 'none',
-                // secure: true,
               })
               .send(user.toJSON());
           } else {
